@@ -131,6 +131,22 @@ Alpine.data('game', function () {
                     return legend;
                 }
             },
+            rot13: {
+                id: 'rot13',
+                name: 'ROT13',
+                symbols: false,
+                seed: false,
+                steps: false,
+                legend(alphabet) {
+                    let legend = {};
+                    let shift_characters = 13;
+                    for (let step = 0; step < alphabet.length; step++) {
+                        legend[alphabet[step]] = alphabet[(step + shift_characters) % alphabet.length];
+                    }
+
+                    return legend;
+                }
+            },
         },
 
 

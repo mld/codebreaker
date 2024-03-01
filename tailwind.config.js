@@ -10,7 +10,7 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                emoji: ['"Noto Emoji"', ...defaultTheme.fontFamily.sans]
+                emoji: ['"Noto Emoji Variable"']
             }
         },
     },

@@ -270,7 +270,7 @@
                     <template x-for="character in word">
                         <div class="flex flex-col items-center justify-center gap-x-3 gap-y-5 mx-2 break-inside-avoid">
                             <span x-text="character" :class="symbolSets[toSymbolSet].font"></span>
-                            <div class="size-10 border-b-2"></div>
+                            <div class="size-10 border-b-2 border-gray-500"><span class="text-gray-200 print:hidden" x-text="reverseLegend[character]"></span></div>
                         </div>
                     </template>
                 </div>

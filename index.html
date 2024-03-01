@@ -264,13 +264,15 @@
     </header>
 
     <section id="coded-message" class="bg-white shadow-md rounded-md gap-5 py-4 print:shadow-none print:mt-auto">
-        <div class="justify-center flex flex-wrap gap-7">
-            <template x-for="word in words">
+        <div class="justify-center flex flex-wrap gap-7" >
+            <template x-for="(word,wordIndex) in words">
                 <div class="inline-flex mx-2  text-2xl uppercase text-center break-after-auto">
-                    <template x-for="character in word">
+                    <template x-for="(character,characterIndex) in word">
                         <div class="flex flex-col items-center justify-center gap-x-3 gap-y-5 mx-2 break-inside-avoid">
-                            <span x-text="character" :class="symbolSets[toSymbolSet].font"></span>
-                            <div class="size-10 border-b-2 border-gray-500"><span class="text-gray-200 print:hidden" x-text="reverseLegend[character]"></span></div>
+                            <span x-text="character" :class="toSymbolSetFont"></span>
+                            <div class="size-10 border-b-2 border-gray-500" :class="fromSymbolSetFont">
+                                <span class="text-gray-200 print:hidden" x-text="decodedWords[wordIndex][characterIndex]"></span>
+                            </div>
                         </div>
                     </template>
                 </div>
@@ -285,9 +287,9 @@
                 <div
                     class="flex flex-col items-center border-l last:border-r border-black/10 print:border-gray-400 mt-5">
                     <span class="w-10 print:w-8 text-2xl uppercase text-center " x-text="character"
-                          :class="symbolSets[fromSymbolSet].font"></span>
+                          :class="fromSymbolSetFont"></span>
                     <span class="w-10 print:w-8 text-2xl uppercase text-center " x-text="symbol"
-                          :class="symbolSets[toSymbolSet].font"></span>
+                          :class="toSymbolSetFont"></span>
                 </div>
             </template>
         </div>

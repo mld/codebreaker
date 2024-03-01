@@ -16,25 +16,26 @@ window.Alpine = Alpine
 
 Alpine.data('game', function () {
     return {
-        fromSymbolSet: this.$persist('swedish'),
+        fromSymbolSet: this.$persist('english'),
+        fromSymbolSetFont: '',
         toSymbolSet: 'symbols',
+        toSymbolSetFont: '',
         cipher: this.$persist('symbol_shuffle'),
         seed: this.$persist(Math.round(Math.random() * 0xDEADBEEF)),
         steps: this.$persist(Math.round((Math.random() * 0xDEADBEEF) % 26) + 1),
         message: this.$persist('Hello World'),
         legend: {},
-        reverseLegend: {},
         languages: ['swedish', 'english'],
         words: "",
+        decodedWords: "",
         settingsModal: false,
 
         reset() {
-            this.fromSymbolSet = 'swedish';
             this.cipher = 'symbol_shuffle';
             this.message = 'Hello World';
             this.randomSeed();
             this.randomSteps();
-            this.initCipher()
+            this.initCipher();
         },
 
         randomSeed() {
@@ -57,6 +58,9 @@ Alpine.data('game', function () {
             } else {
                 this.toSymbolSet = this.fromSymbolSet;
             }
+
+            this.fromSymbolSetFont = this.symbolSets[this.fromSymbolSet].font;
+            this.toSymbolSetFont = this.symbolSets[this.toSymbolSet].font;
         },
 
         ciphers: {
@@ -67,7 +71,7 @@ Alpine.data('game', function () {
         },
 
 
-        splitWords() {
+        encode() {
             if (this.message.length === 0) {
                 this.words = [];
                 return;
@@ -76,20 +80,27 @@ Alpine.data('game', function () {
             let message = '';
             [...this.message.toLowerCase()].forEach(c => message += Object.hasOwn(this.legend, c) ? c : ' ');
 
-            let words = message.match(/\S+/g);
+            const words = message.match(/\S+/g);
             if (words === null) {
                 this.words = [];
                 return;
             }
 
             let codeWords = [];
+            let clearWords = [];
             words.forEach((word) => {
                 let codeWord = [];
-                [...word].forEach(c => codeWord.push(Object.hasOwn(this.legend, c) ? this.legend[c] : ''))
-                codeWords.push(codeWord)
+                let clearWord = [];
+                [...word].forEach(c => {
+                    codeWord.push(Object.hasOwn(this.legend, c) ? this.legend[c] : '');
+                    clearWord.push(Object.hasOwn(this.legend, c) ? c : '');
+                })
+                codeWords.push(codeWord);
+                clearWords.push(clearWord);
             });
 
             this.words = codeWords;
+            this.decodedWords = clearWords;
         },
 
         updateLegend() {
@@ -120,12 +131,6 @@ Alpine.data('game', function () {
             // fetch the legend from the selected cipher
             this.legend = this.ciphers[this.cipher].legend(...params);
 
-            // also save the reverse lookup table for legends, for ease of use
-            this.reverseLegend = {};
-            for (const [key, value] of Object.entries(this.legend)) {
-                this.reverseLegend[value] = key;
-            }
-
             return this.legend;
         },
 
@@ -151,16 +156,18 @@ Alpine.data('game', function () {
         },
 
         init() {
+            this.initCipher();
             this.updateLegend();
-            this.splitWords();
+            this.encode();
 
-            this.$watch('seed, steps, cipher, fromSymbolSet, toSymbolSet', (value) => {
+            this.$watch('seed, steps, cipher, fromSymbolSet', (value) => {
+                this.initCipher();
                 this.updateLegend();
-                this.splitWords();
+                this.encode();
             });
             this.$watch('message', () => {
                 this.messageFilter();
-                this.splitWords();
+                this.encode();
             });
         },
     }

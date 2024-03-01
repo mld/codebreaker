@@ -176,36 +176,27 @@ Alpine.data('game', function () {
         },
 
         updateLegend() {
-            // this function got bad fast, and will get worse if we add more ciphers needing other parameters
-            // todo: find a way to clean this up, maybe adding params to an array and ...params them out?
+            // Parameters to the cipher.legend() function must come in the order below
+
+            let params = [];
+
             let alphabet = [...this.symbolSets[this.fromSymbolSet].alphabet];
+            params.push(alphabet);
 
-            let needsSeed = this.ciphers[this.cipher].seed;
-            let needsSteps = this.ciphers[this.cipher].steps;
-            let needsSymbols = this.ciphers[this.cipher].symbols;
-
-            if (needsSymbols) {
+            if(this.ciphers[this.cipher].symbols) {
                 let symbols = [...this.symbolSets.symbols.alphabet];
+                params.push(symbols);
+            }
 
-                if (needsSeed && needsSteps) {
-                    this.legend = this.ciphers[this.cipher].legend(alphabet, symbols, this.seed, this.steps);
-                } else if (!needsSeed && needsSteps) {
-                    this.legend = this.ciphers[this.cipher].legend(alphabet, symbols, this.steps);
-                } else if (needsSeed && !needsSteps) {
-                    this.legend = this.ciphers[this.cipher].legend(alphabet, symbols, this.seed);
-                }
-            } else if (!needsSymbols && needsSeed) {
-                if (needsSteps) {
-                    this.legend = this.ciphers[this.cipher].legend(alphabet, this.seed, this.steps);
-                } else if(!needsSteps) {
-                    this.legend = this.ciphers[this.cipher].legend(alphabet, this.seed);
-                }
-            } else if (!needsSymbols && !needsSeed && needsSteps) {
-                this.legend = this.ciphers[this.cipher].legend(alphabet, this.seed);
+            if(this.ciphers[this.cipher].seed) {
+                params.push(this.seed);
             }
-            else {
-                this.legend = this.ciphers[this.cipher].legend(alphabet)
+
+            if(this.ciphers[this.cipher].steps) {
+                params.push(this.steps);
             }
+
+            this.legend = this.ciphers[this.cipher].legend(...params);
 
             return this.legend;
         },

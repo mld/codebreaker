@@ -75,7 +75,6 @@ Alpine.data('game', function () {
                 name: 'Symbol Shuffle',
                 symbols: true,
                 seed: true,
-                steps: false,
                 legend(alphabet, symbols, seed) {
                     let digits = alphabet.length
                     let legend = {}
@@ -96,8 +95,6 @@ Alpine.data('game', function () {
             caesar: {
                 id: 'caesar',
                 name: 'Caesar',
-                symbols: false,
-                seed: false,
                 steps: true,
                 legend(alphabet, shift_characters = 1) {
                     let legend = {}
@@ -112,9 +109,7 @@ Alpine.data('game', function () {
             simple_substitution: {
                 id: 'simple_substitution',
                 name: 'Simple Shuffle',
-                symbols: false,
                 seed: true,
-                steps: false,
                 legend(alphabet, seed) {
                     let legend = {}
                     let digits = alphabet.length
@@ -134,9 +129,6 @@ Alpine.data('game', function () {
             rot13: {
                 id: 'rot13',
                 name: 'ROT13',
-                symbols: false,
-                seed: false,
-                steps: false,
                 legend(alphabet) {
                     let legend = {};
                     let shift_characters = 13;
@@ -183,16 +175,19 @@ Alpine.data('game', function () {
             let alphabet = [...this.symbolSets[this.fromSymbolSet].alphabet];
             params.push(alphabet);
 
-            if(this.ciphers[this.cipher].symbols) {
+            // symbols
+            if (this.ciphers[this.cipher].symbols) {
                 let symbols = [...this.symbolSets.symbols.alphabet];
                 params.push(symbols);
             }
 
-            if(this.ciphers[this.cipher].seed) {
+            // seed
+            if (this.ciphers[this.cipher].seed) {
                 params.push(this.seed);
             }
 
-            if(this.ciphers[this.cipher].steps) {
+            // steps
+            if (this.ciphers[this.cipher].steps) {
                 params.push(this.steps);
             }
 

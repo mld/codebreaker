@@ -1,14 +1,18 @@
 import Alpine from 'alpinejs'
 import persist from '@alpinejs/persist'
 import collapse from '@alpinejs/collapse'
-import Randomizer from "./randomizer.js";
+import symbolShuffle from "./src/ciphers/symbol-shuffle.js";
+import caesar from "./src/ciphers/caesar.js";
+import simpleShuffle from "./src/ciphers/simple-shuffle.js";
+import rot13 from "./src/ciphers/rot-13.js";
+import swedish from "./src/symbols-sets/swedish.js";
+import english from "./src/symbols-sets/english.js";
+import symbols from "./src/symbols-sets/symbols.js";
 
 Alpine.plugin(persist)
 Alpine.plugin(collapse)
 
 window.Alpine = Alpine
-
-// Alpine.data('Randomizer', Randomizer)
 
 Alpine.data('game', function () {
     return {
@@ -19,6 +23,7 @@ Alpine.data('game', function () {
         steps: this.$persist(Math.round((Math.random() * 0xDEADBEEF) % 26) + 1),
         message: this.$persist('Hello World'),
         legend: {},
+        reverseLegend: {},
         languages: ['swedish', 'english'],
         words: "",
         settingsModal: false,
@@ -41,24 +46,9 @@ Alpine.data('game', function () {
         },
 
         symbolSets: {
-            swedish: {
-                id: 'swedish',
-                name: 'Swedish',
-                alphabet: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'å', 'ä', 'ö'],
-                font: '',
-            },
-            english: {
-                id: 'english',
-                name: 'English',
-                alphabet: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'],
-                font: '',
-            },
-            symbols: {
-                id: 'symbols',
-                name: 'Symbols',
-                alphabet: ['🎶', '🎺', '♥️', '♦️', '♠️', '♣️', '🍒', '🍏', '🍌', '✈️', '🛸', '🚗', '🌜', '🌞', '⭐', '🤖', '☠️', '🍄', '🍀', '🐎', '🐈', '🐕', '🐀', '🦖', '🐢', '🦔', '👾', '👑', '🎈'],
-                font: 'font-emoji',
-            },
+            swedish: swedish,
+            english: english,
+            symbols: symbols,
         },
 
         initCipher() {
@@ -70,75 +60,10 @@ Alpine.data('game', function () {
         },
 
         ciphers: {
-            symbol_shuffle: {
-                id: 'symbol_shuffle',
-                name: 'Symbol Shuffle',
-                symbols: true,
-                seed: true,
-                legend(alphabet, symbols, seed) {
-                    let digits = alphabet.length
-                    let legend = {}
-
-                    // initialize randomizer with custom seed, making the legend repeatable
-                    let rnd = Randomizer().get()
-                    rnd.init_seed(seed);
-
-                    // generate the legend
-                    for (let step = 0; step < digits; step++) {
-                        let symbolNo = rnd.random_int() % (symbols.length);
-                        let symbol = symbols.splice(symbolNo, 1);
-                        legend[alphabet[step]] = symbol[0]
-                    }
-                    return legend;
-                }
-            },
-            caesar: {
-                id: 'caesar',
-                name: 'Caesar',
-                steps: true,
-                legend(alphabet, shift_characters = 1) {
-                    let legend = {}
-
-                    for (let step = 0; step < alphabet.length; step++) {
-                        legend[alphabet[step]] = alphabet[(step + shift_characters) % alphabet.length];
-                    }
-
-                    return legend;
-                }
-            },
-            simple_substitution: {
-                id: 'simple_substitution',
-                name: 'Simple Shuffle',
-                seed: true,
-                legend(alphabet, seed) {
-                    let legend = {}
-                    let digits = alphabet.length
-                    let symbols = [...alphabet]
-
-                    let rnd = Randomizer().get()
-                    rnd.init_seed(seed);
-
-                    for (let step = 0; step < digits; step++) {
-                        let symbol = symbols.splice(rnd.random_int() % (symbols.length), 1);
-                        legend[alphabet[step]] = symbol[0]
-                    }
-
-                    return legend;
-                }
-            },
-            rot13: {
-                id: 'rot13',
-                name: 'ROT13',
-                legend(alphabet) {
-                    let legend = {};
-                    let shift_characters = 13;
-                    for (let step = 0; step < alphabet.length; step++) {
-                        legend[alphabet[step]] = alphabet[(step + shift_characters) % alphabet.length];
-                    }
-
-                    return legend;
-                }
-            },
+            symbol_shuffle: symbolShuffle,
+            caesar: caesar,
+            simple_substitution: simpleShuffle,
+            rot13: rot13,
         },
 
 
@@ -172,6 +97,7 @@ Alpine.data('game', function () {
 
             let params = [];
 
+            // the alphabet is always supplied
             let alphabet = [...this.symbolSets[this.fromSymbolSet].alphabet];
             params.push(alphabet);
 
@@ -191,7 +117,14 @@ Alpine.data('game', function () {
                 params.push(this.steps);
             }
 
+            // fetch the legend from the selected cipher
             this.legend = this.ciphers[this.cipher].legend(...params);
+
+            // also save the reverse lookup table for legends, for ease of use
+            this.reverseLegend = {};
+            for (const [key, value] of Object.entries(this.legend)) {
+                this.reverseLegend[value] = key;
+            }
 
             return this.legend;
         },

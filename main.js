@@ -109,6 +109,28 @@ Alpine.data('game', function () {
                     return legend;
                 }
             },
+            simple_substitution: {
+                id: 'simple_substitution',
+                name: 'Shuffle',
+                symbols: false,
+                seed: true,
+                steps: false,
+                legend(alphabet, seed) {
+                    let legend = {}
+                    let digits = alphabet.length
+                    let symbols = [...alphabet]
+
+                    let rnd = Randomizer().get()
+                    rnd.init_seed(seed);
+
+                    for (let step = 0; step < digits; step++) {
+                        let symbol = symbols.splice(rnd.random_int() % (symbols.length), 1);
+                        legend[alphabet[step]] = symbol[0]
+                    }
+
+                    return legend;
+                }
+            },
         },
 
 

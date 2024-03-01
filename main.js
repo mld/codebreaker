@@ -93,6 +93,22 @@ Alpine.data('game', function () {
                     return legend;
                 }
             },
+            caesar: {
+                id: 'caesar',
+                name: 'Caesar',
+                symbols: false,
+                seed: false,
+                steps: true,
+                legend(alphabet, shift_characters = 1) {
+                    let legend = {}
+
+                    for (let step = 0; step < alphabet.length; step++) {
+                        legend[alphabet[step]] = alphabet[(step + shift_characters) % alphabet.length];
+                    }
+
+                    return legend;
+                }
+            },
         },
 
 

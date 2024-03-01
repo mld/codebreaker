@@ -10,23 +10,30 @@ Examples on how to use it (after printing it the encrypted message to paper):
 * Cut away the legend, but give hints by deciphering one or more characters (intermediate)
 * Cut away the legend (advanced)
 
-## Inspiration
+# Implemented cryptos
+
+* Symbol Shuffle is a [substitution cipher](https://en.wikipedia.org/wiki/Substitution_cipher) using a selection of symbols from noto-emoji.
+* [Caesar](https://en.wikipedia.org/wiki/Caesar_cipher) is a shift cipher.
+* Simple Shuffle is a [substitution cipher](https://en.wikipedia.org/wiki/Substitution_cipher), but shuffling the alphabet instead of symbols.
+* [ROT-13](https://en.wikipedia.org/wiki/ROT13) is a variation of Caesar, always shifting 13 characters.
+
+# Inspiration
 
 This project is heavily inspired by
 the [Laracasts](https://www.laracasts.com/) [Codebreaker](https://github.com/laracasts/codebreaker/) series.
 The major difference is that this is a fully static web page with no server side dependencies. There's also more ciphers
 available than in the original.
 
-## Imported media
+# Imported media
 
-### Fonts
+## Fonts
 
 * [Noto Emoji](https://fonts.google.com/noto/specimen/Noto+Emoji)
 
-### App icon
+## App icon
 
 * [uxwing](https://uxwing.com/encryption-icon/)
 
-### Other icons
+## Other icons
 
 * [heroicons](https://heroicons.com/)

@@ -111,7 +111,7 @@ Alpine.data('game', function () {
             },
             simple_substitution: {
                 id: 'simple_substitution',
-                name: 'Shuffle',
+                name: 'Simple Shuffle',
                 symbols: false,
                 seed: true,
                 steps: false,

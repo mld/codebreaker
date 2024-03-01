@@ -1,6 +1,6 @@
-import Alpine from 'alpinejs'
-import persist from '@alpinejs/persist'
-import collapse from '@alpinejs/collapse'
+import Alpine from "alpinejs";
+import persist from "@alpinejs/persist";
+import collapse from "@alpinejs/collapse";
 import symbolShuffle from "./src/ciphers/symbol-shuffle.js";
 import caesar from "./src/ciphers/caesar.js";
 import simpleShuffle from "./src/ciphers/simple-shuffle.js";
@@ -9,168 +9,167 @@ import swedish from "./src/symbols-sets/swedish.js";
 import english from "./src/symbols-sets/english.js";
 import symbols from "./src/symbols-sets/symbols.js";
 
-Alpine.plugin(persist)
-Alpine.plugin(collapse)
+Alpine.plugin(persist);
+Alpine.plugin(collapse);
 
-window.Alpine = Alpine
+window.Alpine = Alpine;
 
-Alpine.data('game', function () {
-    return {
-        fromSymbolSet: this.$persist('english'),
-        fromSymbolSetFont: '',
-        toSymbolSet: 'symbols',
-        toSymbolSetFont: '',
-        cipher: this.$persist('symbol_shuffle'),
-        seed: this.$persist(Math.round(Math.random() * 0xDEADBEEF)),
-        steps: this.$persist(Math.round((Math.random() * 0xDEADBEEF) % 26) + 1),
-        message: this.$persist('Hello World'),
-        legend: {},
-        languages: ['swedish', 'english'],
-        words: "",
-        decodedWords: "",
-        settingsModal: false,
+Alpine.data("game", function () {
+  return {
+    fromSymbolSet: this.$persist("english"),
+    fromSymbolSetFont: "",
+    toSymbolSet: "symbols",
+    toSymbolSetFont: "",
+    cipher: this.$persist("symbol_shuffle"),
+    seed: this.$persist(Math.round(Math.random() * 0xdeadbeef)),
+    steps: this.$persist(Math.round((Math.random() * 0xdeadbeef) % 26) + 1),
+    message: this.$persist("Hello World"),
+    legend: {},
+    languages: ["swedish", "english"],
+    words: "",
+    decodedWords: "",
+    settingsModal: false,
 
-        reset() {
-            this.cipher = 'symbol_shuffle';
-            this.message = 'Hello World';
-            this.randomSeed();
-            this.randomSteps();
-            this.initCipher();
-        },
+    reset() {
+      this.cipher = "symbol_shuffle";
+      this.message = "Hello World";
+      this.randomSeed();
+      this.randomSteps();
+      this.initCipher();
+    },
 
-        randomSeed() {
-            this.seed = Math.round(Math.random() * 0xDEADBEEF);
-        },
+    randomSeed() {
+      this.seed = Math.round(Math.random() * 0xdeadbeef);
+    },
 
-        randomSteps() {
-            this.steps = Math.round((Math.random() * 0xDEADBEEF) % 26) + 1;
-        },
+    randomSteps() {
+      this.steps = Math.round((Math.random() * 0xdeadbeef) % 26) + 1;
+    },
 
-        symbolSets: {
-            swedish: swedish,
-            english: english,
-            symbols: symbols,
-        },
+    symbolSets: {
+      swedish: swedish,
+      english: english,
+      symbols: symbols,
+    },
 
-        initCipher() {
-            if (this.ciphers[this.cipher].symbols === true) {
-                this.toSymbolSet = this.symbolSets.symbols.id;
-            } else {
-                this.toSymbolSet = this.fromSymbolSet;
-            }
+    initCipher() {
+      if (this.ciphers[this.cipher].symbols === true) {
+        this.toSymbolSet = this.symbolSets.symbols.id;
+      } else {
+        this.toSymbolSet = this.fromSymbolSet;
+      }
 
-            this.fromSymbolSetFont = this.symbolSets[this.fromSymbolSet].font;
-            this.toSymbolSetFont = this.symbolSets[this.toSymbolSet].font;
-        },
+      this.fromSymbolSetFont = this.symbolSets[this.fromSymbolSet].font;
+      this.toSymbolSetFont = this.symbolSets[this.toSymbolSet].font;
+    },
 
-        ciphers: {
-            symbol_shuffle: symbolShuffle,
-            caesar: caesar,
-            simple_substitution: simpleShuffle,
-            rot13: rot13,
-        },
+    ciphers: {
+      symbol_shuffle: symbolShuffle,
+      caesar: caesar,
+      simple_substitution: simpleShuffle,
+      rot13: rot13,
+    },
 
+    encode() {
+      if (this.message.length === 0) {
+        this.words = [];
+        return;
+      }
 
-        encode() {
-            if (this.message.length === 0) {
-                this.words = [];
-                return;
-            }
+      let message = "";
+      [...this.message.toLowerCase()].forEach((c) => (message += Object.hasOwn(this.legend, c) ? c : " "));
 
-            let message = '';
-            [...this.message.toLowerCase()].forEach(c => message += Object.hasOwn(this.legend, c) ? c : ' ');
+      const words = message.match(/\S+/g);
+      if (words === null) {
+        this.words = [];
+        return;
+      }
 
-            const words = message.match(/\S+/g);
-            if (words === null) {
-                this.words = [];
-                return;
-            }
+      let codeWords = [];
+      let clearWords = [];
+      words.forEach((word) => {
+        let codeWord = [];
+        let clearWord = [];
+        [...word].forEach((c) => {
+          codeWord.push(Object.hasOwn(this.legend, c) ? this.legend[c] : "");
+          clearWord.push(Object.hasOwn(this.legend, c) ? c : "");
+        });
+        codeWords.push(codeWord);
+        clearWords.push(clearWord);
+      });
 
-            let codeWords = [];
-            let clearWords = [];
-            words.forEach((word) => {
-                let codeWord = [];
-                let clearWord = [];
-                [...word].forEach(c => {
-                    codeWord.push(Object.hasOwn(this.legend, c) ? this.legend[c] : '');
-                    clearWord.push(Object.hasOwn(this.legend, c) ? c : '');
-                })
-                codeWords.push(codeWord);
-                clearWords.push(clearWord);
-            });
+      this.words = codeWords;
+      this.decodedWords = clearWords;
+    },
 
-            this.words = codeWords;
-            this.decodedWords = clearWords;
-        },
+    updateLegend() {
+      // Parameters to the cipher.legend() function must come in the order below
 
-        updateLegend() {
-            // Parameters to the cipher.legend() function must come in the order below
+      let params = [];
 
-            let params = [];
+      // the alphabet is always supplied
+      let alphabet = [...this.symbolSets[this.fromSymbolSet].alphabet];
+      params.push(alphabet);
 
-            // the alphabet is always supplied
-            let alphabet = [...this.symbolSets[this.fromSymbolSet].alphabet];
-            params.push(alphabet);
+      // symbols
+      if (this.ciphers[this.cipher].symbols) {
+        let symbols = [...this.symbolSets.symbols.alphabet];
+        params.push(symbols);
+      }
 
-            // symbols
-            if (this.ciphers[this.cipher].symbols) {
-                let symbols = [...this.symbolSets.symbols.alphabet];
-                params.push(symbols);
-            }
+      // seed
+      if (this.ciphers[this.cipher].seed) {
+        params.push(this.seed);
+      }
 
-            // seed
-            if (this.ciphers[this.cipher].seed) {
-                params.push(this.seed);
-            }
+      // steps
+      if (this.ciphers[this.cipher].steps) {
+        params.push(this.steps);
+      }
 
-            // steps
-            if (this.ciphers[this.cipher].steps) {
-                params.push(this.steps);
-            }
+      // fetch the legend from the selected cipher
+      this.legend = this.ciphers[this.cipher].legend(...params);
 
-            // fetch the legend from the selected cipher
-            this.legend = this.ciphers[this.cipher].legend(...params);
+      return this.legend;
+    },
 
-            return this.legend;
-        },
+    messageFilter() {
+      let message = "";
+      if (this.message.length > 0) {
+        [...this.message].forEach((c) => (message += this.validCharacter(c) ? c : ""));
+        this.message = message;
+      }
+    },
 
-        messageFilter() {
-            let message = '';
-            if (this.message.length > 0) {
-                [...this.message].forEach(c => message += (this.validCharacter(c)) ? c : '');
-                this.message = message;
-            }
-        },
+    validCharacter(key) {
+      return Object.hasOwn(this.legend, key.toLowerCase()) || key === " ";
+    },
 
-        validCharacter(key) {
-            return (Object.hasOwn(this.legend, key.toLowerCase()) || key === ' ');
-        },
+    onKeyPress(key) {
+      if (this.validCharacter(key)) {
+        this.message += key;
+      } else if (key === "Backspace" && this.message.length > 0 && !this.settingsModal) {
+        this.message = this.message.slice(0, -1);
+      }
+      // ignore any characters we don't care about
+    },
 
-        onKeyPress(key) {
-            if (this.validCharacter(key)) {
-                this.message += key;
-            } else if (key === 'Backspace' && this.message.length > 0 && !this.settingsModal) {
-                this.message = this.message.slice(0, -1)
-            }
-            // ignore any characters we don't care about
-        },
+    init() {
+      this.initCipher();
+      this.updateLegend();
+      this.encode();
 
-        init() {
-            this.initCipher();
-            this.updateLegend();
-            this.encode();
-
-            this.$watch('seed, steps, cipher, fromSymbolSet', (value) => {
-                this.initCipher();
-                this.updateLegend();
-                this.encode();
-            });
-            this.$watch('message', () => {
-                this.messageFilter();
-                this.encode();
-            });
-        },
-    }
+      this.$watch("seed, steps, cipher, fromSymbolSet", () => {
+        this.initCipher();
+        this.updateLegend();
+        this.encode();
+      });
+      this.$watch("message", () => {
+        this.messageFilter();
+        this.encode();
+      });
+    },
+  };
 });
 
-Alpine.start()
+Alpine.start();

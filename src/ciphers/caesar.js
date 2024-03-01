@@ -12,7 +12,7 @@ const caesar = () => {
 
             return legend;
         }
-    }
+    };
 };
 
 export default caesar();

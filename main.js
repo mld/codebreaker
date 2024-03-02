@@ -72,6 +72,7 @@ Alpine.data("game", function () {
 
     encode() {
       if (this.message.length === 0) {
+        this.decodedWords = [];
         this.words = [];
         return;
       }
@@ -81,6 +82,7 @@ Alpine.data("game", function () {
 
       const words = message.match(/\S+/g);
       if (words === null) {
+        this.decodedWords = [];
         this.words = [];
         return;
       }
@@ -98,8 +100,8 @@ Alpine.data("game", function () {
         clearWords.push(clearWord);
       });
 
-      this.words = codeWords;
       this.decodedWords = clearWords;
+      this.words = codeWords;
     },
 
     updateLegend() {

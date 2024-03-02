@@ -26,8 +26,8 @@ Alpine.data("game", function () {
     message: this.$persist("Hello World"),
     legend: {},
     languages: ["swedish", "english"],
-    words: "",
-    decodedWords: "",
+    lines: "",
+    decodedLines: "",
     settingsModal: false,
 
     reset() {
@@ -72,36 +72,41 @@ Alpine.data("game", function () {
 
     encode() {
       if (this.message.length === 0) {
-        this.decodedWords = [];
-        this.words = [];
+        this.decodedLines = [];
+        this.lines = [];
         return;
       }
 
       let message = "";
-      [...this.message.toLowerCase()].forEach((c) => (message += Object.hasOwn(this.legend, c) ? c : " "));
+      [...this.message.toLowerCase()].forEach((c) => (message += this.validCharacter(c) ? c : ""));
+      message += "█";
 
-      const words = message.match(/\S+/g);
-      if (words === null) {
-        this.decodedWords = [];
-        this.words = [];
-        return;
-      }
+      const lines = message.split(/\n+/);
+      let codeLines = [];
+      let clearLines = [];
 
-      let codeWords = [];
-      let clearWords = [];
-      words.forEach((word) => {
-        let codeWord = [];
-        let clearWord = [];
-        [...word].forEach((c) => {
-          codeWord.push(Object.hasOwn(this.legend, c) ? this.legend[c] : "");
-          clearWord.push(Object.hasOwn(this.legend, c) ? c : "");
+      lines.forEach((line) => {
+        const words = line.split(/\s+/);
+
+        let codeWords = [];
+        let clearWords = [];
+        words.forEach((word) => {
+          let codeWord = [];
+          let clearWord = [];
+          [...word].forEach((c) => {
+            const hasSymbol = Object.hasOwn(this.legend, c);
+            codeWord.push(hasSymbol ? this.legend[c] : " ");
+            clearWord.push(hasSymbol || c === "█" ? c : " ");
+          });
+          codeWords.push(codeWord);
+          clearWords.push(clearWord);
         });
-        codeWords.push(codeWord);
-        clearWords.push(clearWord);
+        codeLines.push(codeWords);
+        clearLines.push(clearWords);
       });
 
-      this.decodedWords = clearWords;
-      this.words = codeWords;
+      this.decodedLines = clearLines;
+      this.lines = codeLines;
     },
 
     updateLegend() {
@@ -136,23 +141,39 @@ Alpine.data("game", function () {
     },
 
     messageFilter() {
-      let message = "";
-      if (this.message.length > 0) {
-        [...this.message].forEach((c) => (message += this.validCharacter(c) ? c : ""));
-        this.message = message;
+      if (this.message.length === 0) {
+        return;
       }
+
+      let message = "";
+      [...this.message].forEach((c) => (message += this.validCharacter(c) ? c : ""));
+
+      const lines = message.split(/\n+/);
+      let cleanLines = [];
+      lines.forEach((line) => {
+        cleanLines.push(line.split(/\s+/).join(" "));
+      });
+
+      this.message = cleanLines.join("\n");
     },
 
     validCharacter(key) {
-      return Object.hasOwn(this.legend, key.toLowerCase()) || key === " ";
+      return Object.hasOwn(this.legend, key.toLowerCase()) || key === " " || key === "\n";
+    },
+
+    isCursor(character) {
+      return character === "█";
     },
 
     onKeyPress(key) {
       if (this.validCharacter(key)) {
         this.message += key;
+      } else if (key === "Enter" && this.message.length > 0 && !this.settingsModal) {
+        this.message += "\n";
       } else if (key === "Backspace" && this.message.length > 0 && !this.settingsModal) {
         this.message = this.message.slice(0, -1);
       }
+
       // ignore any characters we don't care about
     },
 

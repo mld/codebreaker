@@ -339,16 +339,34 @@
     </header>
 
     <section id="coded-message" class="bg-white shadow-md rounded-md gap-5 py-4 print:shadow-none print:mt-auto">
-        <div class="justify-center flex flex-wrap gap-7">
-            <template x-for="(word,wordIndex) in words">
-                <div class="inline-flex mx-2 text-2xl uppercase text-center break-after-auto">
-                    <template x-for="(character,characterIndex) in word">
-                        <div class="flex flex-col items-center justify-center gap-x-3 gap-y-5 mx-2 break-inside-avoid">
-                            <span x-text="character" :class="toSymbolSetFont"></span>
-                            <div class="size-10 border-b-2 border-gray-500" :class="fromSymbolSetFont">
-                                <span class="text-gray-200 print:hidden"
-                                      x-text="decodedWords[wordIndex][characterIndex]"></span>
-                            </div>
+        <div class="flex flex-col gap-7">
+            <template x-for="(line,lineIndex) in lines">
+                <div class=" mx-2 text-2xl uppercase justify-center text-center break-after-all">
+                    <template x-for="(word,wordIndex) in line">
+                        <div class="inline-flex mx-2 mb-2 text-2xl uppercase text-center break-after-auto">
+                            <template x-for="(character,characterIndex) in word">
+                                <div class="inline break-inside-avoid">
+                                    <template x-if="isCursor(decodedLines[lineIndex][wordIndex][characterIndex])">
+                                        <div class="flex flex-col items-center justify-center gap-x-3 gap-y-5 mx-2">
+                                            <span :class="toSymbolSetFont">&nbsp;</span>
+                                            <div class="size-10 " :class="fromSymbolSetFont">
+                                                <span
+                                                    class="text-gray-500 print:hidden animate-pulse duration-300">█</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template x-if="!isCursor(decodedLines[lineIndex][wordIndex][characterIndex])">
+                                        <div
+                                            class="flex flex-col items-center justify-center gap-x-3 gap-y-5 mx-2">
+                                            <span x-text="character" :class="toSymbolSetFont"></span>
+                                            <div class="size-10 border-b-2 border-gray-500" :class="fromSymbolSetFont">
+                                                    <span class="text-gray-200 print:hidden"
+                                                          x-text="decodedLines[lineIndex][wordIndex][characterIndex]"></span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
                         </div>
                     </template>
                 </div>

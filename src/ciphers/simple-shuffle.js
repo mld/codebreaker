@@ -10,8 +10,7 @@ const simpleShuffle = () => {
       const digits = alphabet.length;
       let symbols = [...alphabet];
 
-      const rnd = new MersenneTwister();
-      rnd.init_seed(seed);
+      const rnd = new MersenneTwister(seed);
 
       for (let step = 0; step < digits; step++) {
         const symbol = symbols.splice(rnd.random_int() % symbols.length, 1);

@@ -11,8 +11,7 @@ const symbolShuffle = () => {
       let legend = {};
 
       // initialize randomizer with custom seed, making the legend repeatable
-      const rnd = new MersenneTwister();
-      rnd.init_seed(seed);
+      const rnd = new MersenneTwister(seed);
 
       // generate the legend
       for (let step = 0; step < digits; step++) {

@@ -347,11 +347,11 @@
                             <template x-for="(character,characterIndex) in word">
                                 <div class="inline break-inside-avoid">
                                     <template x-if="isCursor(decodedLines[lineIndex][wordIndex][characterIndex])">
-                                        <div class="flex flex-col items-center justify-center gap-x-3 gap-y-5 mx-2">
+                                        <div class="flex flex-col items-center justify-center gap-x-3 gap-y-5 mx-2 print:hidden">
                                             <span :class="toSymbolSetFont">&nbsp;</span>
                                             <div class="size-10 " :class="fromSymbolSetFont">
                                                 <span
-                                                    class="text-gray-500 print:hidden animate-pulse duration-300">█</span>
+                                                    class="text-gray-500  animate-pulse duration-300">█</span>
                                             </div>
                                         </div>
                                     </template>

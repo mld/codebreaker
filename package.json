@@ -21,7 +21,7 @@
   "dependencies": {
     "@alpinejs/collapse": "^3.13.5",
     "@alpinejs/persist": "^3.13.5",
-    "@fontsource-variable/noto-emoji": "^5.0.16",
+    "@fontsource-variable/noto-emoji": "^5.0.18",
     "alpinejs": "^3.13.2",
     "mersenne-twister": "^1.1.0"
   }

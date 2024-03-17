@@ -29,6 +29,7 @@ Alpine.data("game", function () {
     lines: "",
     decodedLines: "",
     settingsModal: false,
+    infoModal: false,
 
     reset() {
       this.cipher = "symbol_shuffle";
@@ -168,9 +169,9 @@ Alpine.data("game", function () {
     onKeyPress(key) {
       if (this.validCharacter(key)) {
         this.message += key;
-      } else if (key === "Enter" && this.message.length > 0 && !this.settingsModal) {
+      } else if (key === "Enter" && this.message.length > 0 && (!this.settingsModal || !this.infoModal)) {
         this.message += "\n";
-      } else if (key === "Backspace" && this.message.length > 0 && !this.settingsModal) {
+      } else if (key === "Backspace" && this.message.length > 0 && (!this.settingsModal || !this.infoModal)) {
         this.message = this.message.slice(0, -1);
       }
 

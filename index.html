@@ -327,6 +327,21 @@
                           </div>
                         </div>
                       </template>
+
+                      <template x-if="ciphers[cipher].keyword">
+                        <div class="pt-2">
+                          <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            >Keyword</label
+                          >
+                          <div class="flex flex-row align-middle gap-1">
+                            <input
+                              x-model.number="keyword"
+                              type="text"
+                              class="float-left p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            />
+                          </div>
+                        </div>
+                      </template>
                     </form>
                   </div>
                 </div>
@@ -463,7 +478,12 @@
           class="text-gray-500 hover:text-gray-700"
         >
           <span class="sr-only">GitHub</span>
-          <svg class="h-6 w-6 flex-no-shrink fill-current" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+          <svg
+            class="h-6 w-6 flex-no-shrink fill-current"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 100 100"
+          >
             <path
               fill-rule="evenodd"
               clip-rule="evenodd"

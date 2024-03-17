@@ -8,6 +8,7 @@ import rot13 from "./src/ciphers/rot-13.js";
 import swedish from "./src/symbols-sets/swedish.js";
 import english from "./src/symbols-sets/english.js";
 import symbols from "./src/symbols-sets/symbols.js";
+import mixedAlphabet from "./src/ciphers/mixed-alphabet.js";
 
 Alpine.plugin(persist);
 Alpine.plugin(collapse);
@@ -23,6 +24,7 @@ Alpine.data("game", function () {
     cipher: this.$persist("symbol_shuffle"),
     seed: this.$persist(Math.round(Math.random() * 0xdeadbeef)),
     steps: this.$persist(Math.round((Math.random() * 0xdeadbeef) % 26) + 1),
+    keyword: this.$persist("zebras"),
     message: this.$persist("Hello World"),
     legend: {},
     languages: ["swedish", "english"],
@@ -69,6 +71,7 @@ Alpine.data("game", function () {
       caesar: caesar,
       simple_substitution: simpleShuffle,
       rot13: rot13,
+      mixed_alphabet: mixedAlphabet,
     },
 
     encode() {
@@ -133,6 +136,15 @@ Alpine.data("game", function () {
       // steps
       if (this.ciphers[this.cipher].steps) {
         params.push(this.steps);
+      }
+
+      // keyword
+      if (this.ciphers[this.cipher].keyword) {
+        // make sure we have a clean keyword
+        let cleanKeyword = "";
+        [...this.keyword.toLowerCase()].forEach((c) => (cleanKeyword += alphabet.indexOf(c) >= 0 ? c : ""));
+        console.log("keyword " + this.keyword + " => " + cleanKeyword);
+        params.push(cleanKeyword);
       }
 
       // fetch the legend from the selected cipher

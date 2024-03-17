@@ -12,10 +12,11 @@ Examples on how to use it (after printing it the encrypted message to paper):
 
 # Implemented cryptos
 
-- Symbol Shuffle is a [substitution cipher](https://en.wikipedia.org/wiki/Substitution_cipher) using a selection of symbols from noto-emoji.
+- Symbol Shuffle is a [substitution cipher](https://en.wikipedia.org/wiki/Substitution_cipher) using a shuffled selection of symbols from noto-emoji.
 - [Caesar](https://en.wikipedia.org/wiki/Caesar_cipher) is a shift cipher.
-- Simple Shuffle is a [substitution cipher](https://en.wikipedia.org/wiki/Substitution_cipher), but shuffling the alphabet instead of symbols.
+- Simple Shuffle is another [substitution cipher](https://en.wikipedia.org/wiki/Substitution_cipher), but shuffling the alphabet instead of symbols.
 - [ROT-13](https://en.wikipedia.org/wiki/ROT13) is a variation of Caesar, always shifting 13 characters.
+- [Mixed Alphabet](https://en.wikipedia.org/wiki/Substitution_cipher) is a variation of Caesar, using a keyword to offset the alphabet.
 
 # Inspiration
 

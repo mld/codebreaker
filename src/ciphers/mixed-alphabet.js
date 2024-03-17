@@ -1,13 +1,16 @@
-const caesar = () => {
+const mixedAlphabet = () => {
   return {
-    id: "caesar",
-    name: "Caesar",
-    steps: true,
-    legend(alphabet, shift_characters = 1) {
+    id: "mixed_alphabet",
+    name: "Mixed Alphabet",
+    keyword: true,
+    legend(alphabet, keyword = "zebras") {
       let legend = {};
 
+      // make sure the characters we use are unique, even when characters are duplicated
+      let characters = [...new Set([...keyword, ...alphabet])];
+
       for (let step = 0; step < alphabet.length; step++) {
-        legend[alphabet[step]] = alphabet[(step + shift_characters) % alphabet.length];
+        legend[alphabet[step]] = characters[step];
       }
 
       return legend;
@@ -15,4 +18,4 @@ const caesar = () => {
   };
 };
 
-export default caesar();
+export default mixedAlphabet();

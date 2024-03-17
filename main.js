@@ -143,7 +143,6 @@ Alpine.data("game", function () {
         // make sure we have a clean keyword
         let cleanKeyword = "";
         [...this.keyword.toLowerCase()].forEach((c) => (cleanKeyword += alphabet.indexOf(c) >= 0 ? c : ""));
-        console.log("keyword " + this.keyword + " => " + cleanKeyword);
         params.push(cleanKeyword);
       }
 

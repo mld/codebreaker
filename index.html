@@ -1,33 +1,33 @@
 <!doctype html>
 <html lang="en" class="h-full">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/encryption.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/style.css" />
     <title>Codebreaker</title>
-  </head>
-  <body class="bg-gray-100 font-sans min-h-screen items-center justify-center px-6 py-3 h-full w-full">
-    <div
-      id="game"
-      x-data="game"
-      @keyup.window="onKeyPress($event.key)"
-      @keydown.escape="settingsModal = false"
-      class="container mx-auto h-full flex flex-col flex-1"
-    >
-      <header class="flex justify-between items-center bg-white shadow-md rounded-md py-4 px-8 mb-5 print:hidden">
+</head>
+<body class="bg-gray-100 font-sans min-h-screen items-center justify-center px-6 py-3 h-full w-full">
+<div
+    id="game"
+    x-data="game"
+    @keyup.window="onKeyPress($event.key)"
+    @keydown.escape="settingsModal = false"
+    class="container mx-auto h-full flex flex-col flex-1"
+>
+    <header class="flex justify-between items-center bg-white shadow-md rounded-md py-4 px-8 mb-5 print:hidden">
         <span class="inline-flex items-center">
           <img src="encryption.svg" alt="Codebreaker" class="h-10 w-10" />
           <span class="font-bold ml-2 hidden md:block">Codebreaker</span>
         </span>
 
         <nav class="flex">
-          <ul class="flex flex-row gap-1">
-            <!-- cipher selector -->
-            <li>
-              <div class="flex justify-center">
-                <div
-                  x-data="{
+            <ul class="flex flex-row gap-1">
+                <!-- cipher selector -->
+                <li>
+                    <div class="flex justify-center">
+                        <div
+                            x-data="{
             open: false,
             toggle() {
                 if (this.open) {
@@ -46,351 +46,370 @@
                 unfocusAfter && unfocusAfter.blur()
             }
         }"
-                  x-on:keydown.escape.prevent.stop="close($refs.button)"
-                  x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
-                  x-id="['cipher-dropdown']"
-                  class="relative"
-                >
-                  <button
-                    x-ref="button"
-                    x-on:click="toggle()"
-                    :aria-expanded="open"
-                    :aria-controls="$id('cipher-dropdown')"
-                    type="button"
-                    class="flex items-center gap-2 bg-white w-48 px-5 py-2.5 rounded-md shadow"
-                  >
-                    <span x-text="ciphers[cipher].name"></span>
-                    <!-- Heroicon: chevron-down -->
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5 text-gray-400 ml-auto"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </button>
-
-                  <div
-                    x-ref="panel"
-                    x-show="open"
-                    x-transition.origin.top.left
-                    x-on:click.outside="close($refs.button)"
-                    :id="$id('cipher-dropdown')"
-                    style="display: none"
-                    class="absolute left-0 mt-2 w-40 rounded-md bg-white shadow-md z-50"
-                  >
-                    <template x-for="(item, index) in ciphers">
-                      <a
-                        href="#"
-                        @click="cipher=index; close($refs.button)"
-                        class="flex items-center gap-2 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-2.5 text-left text-sm hover:bg-gray-50 disabled:text-gray-500"
-                        x-text="ciphers[index].name"
-                      ></a>
-                    </template>
-                  </div>
-                </div>
-              </div>
-            </li>
-
-            <!-- alphabet selector -->
-            <li>
-              <div class="flex justify-center">
-                <div
-                  x-data="{
-            open: false,
-            toggle() {
-                if (this.open) {
-                    return this.close()
-                }
-
-                this.$refs.button.focus()
-
-                this.open = true
-            },
-            close(unfocusAfter) {
-                if (! this.open) return
-
-                this.open = false
-
-                unfocusAfter && unfocusAfter.blur()
-            }
-        }"
-                  x-on:keydown.escape.prevent.stop="close($refs.button)"
-                  x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
-                  x-id="['language-dropdown']"
-                  class="relative"
-                >
-                  <button
-                    x-ref="button"
-                    x-on:click="toggle()"
-                    :aria-expanded="open"
-                    :aria-controls="$id('language-dropdown')"
-                    type="button"
-                    class="flex items-center gap-2 bg-white w-32 px-5 py-2.5 rounded-md shadow"
-                  >
-                    <span x-text="symbolSets[fromSymbolSet].name"></span>
-                    <!-- Heroicon: chevron-down -->
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-5 w-5 text-gray-400 ml-auto"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                    >
-                      <path
-                        fill-rule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clip-rule="evenodd"
-                      />
-                    </svg>
-                  </button>
-
-                  <div
-                    x-ref="panel"
-                    x-show="open"
-                    x-transition.origin.top.left
-                    x-on:click.outside="close($refs.button)"
-                    :id="$id('language-dropdown')"
-                    style="display: none"
-                    class="absolute left-0 mt-2 w-40 rounded-md bg-white shadow-md z-50"
-                  >
-                    <template x-for="language in languages">
-                      <a
-                        href="#"
-                        @click="fromSymbolSet=language; close($refs.button)"
-                        class="flex items-center gap-2 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-2.5 text-left text-sm hover:bg-gray-50 disabled:text-gray-500"
-                        x-text="symbolSets[language].name"
-                      ></a>
-                    </template>
-                  </div>
-                </div>
-              </div>
-            </li>
-
-            <!-- print -->
-            <li>
-              <button @click="window.print()" class="inline-flex py-2 px-2 hover:bg-slate-200 rounded">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-6 h-6"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z"
-                  />
-                </svg>
-              </button>
-            </li>
-
-            <!-- trash -->
-            <li>
-              <a href="#" @click="reset()" class="inline-flex py-2 px-2 hover:bg-slate-200 rounded">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-6 h-6"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                  />
-                </svg>
-              </a>
-            </li>
-
-            <!-- settings -->
-            <li>
-              <button class="inline-flex py-2 px-2 hover:bg-slate-200 rounded" @click="settingsModal = !settingsModal">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke-width="1.5"
-                  stroke="currentColor"
-                  class="w-6 h-6"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"
-                  />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                </svg>
-              </button>
-              <div
-                class="fixed inset-0 z-30 flex items-center justify-center overflow-auto bg-black bg-opacity-50"
-                x-show="settingsModal"
-              >
-                <div
-                  class="max-w-3xl px-6 py-6 mx-auto text-left bg-white rounded shadow-lg"
-                  @click.away="settingsModal = false"
-                  x-transition:enter="motion-safe:ease-out duration-300"
-                  x-transition:enter-start="opacity-0 scale-90"
-                  x-transition:enter-end="opacity-100 scale-100"
-                >
-                  <div class="flex items-center justify-center">
-                    <form x-on:submit.prevent="">
-                      <div>
-                        <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                          >Message</label
+                            x-on:keydown.escape.prevent.stop="close($refs.button)"
+                            x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+                            x-id="['cipher-dropdown']"
+                            class="relative"
                         >
-                        <textarea
-                          id="message"
-                          x-model="message"
-                          @keypress.prevent=""
-                          rows="3"
-                          cols="40"
-                          class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        ></textarea>
-                      </div>
-
-                      <template x-if="ciphers[cipher].seed">
-                        <div class="pt-2">
-                          <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                            >Seed</label
-                          >
-                          <div class="flex flex-row align-middle gap-1">
-                            <input
-                              x-model.number="seed"
-                              type="number"
-                              min="0"
-                              max="4294967295"
-                              step="1"
-                              class="float-left p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            />
-                            <button @click="randomSeed()" class="float-right">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="size-6"
-                              >
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
-                                />
-                              </svg>
+                            <button
+                                x-ref="button"
+                                x-on:click="toggle()"
+                                :aria-expanded="open"
+                                :aria-controls="$id('cipher-dropdown')"
+                                type="button"
+                                class="flex items-center gap-2 bg-white w-48 px-5 py-2.5 rounded-md shadow"
+                            >
+                                <span x-text="ciphers[cipher].name"></span>
+                                <!-- Heroicon: chevron-down -->
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="h-5 w-5 text-gray-400 ml-auto"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                        clip-rule="evenodd"
+                                    />
+                                </svg>
                             </button>
-                          </div>
-                        </div>
-                      </template>
 
-                      <template x-if="ciphers[cipher].steps">
-                        <div class="pt-2">
-                          <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                            >Steps</label
-                          >
-                          <div class="flex flex-row align-middle gap-1">
-                            <input
-                              x-model.number="steps"
-                              type="number"
-                              min="1"
-                              max="30"
-                              step="1"
-                              class="float-left p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            />
-                            <button @click="randomSteps()" class="float-right">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke-width="1.5"
-                                stroke="currentColor"
-                                class="size-6"
-                              >
-                                <path
-                                  stroke-linecap="round"
-                                  stroke-linejoin="round"
-                                  d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
-                                />
-                              </svg>
-                            </button>
-                          </div>
+                            <div
+                                x-ref="panel"
+                                x-show="open"
+                                x-transition.origin.top.left
+                                x-on:click.outside="close($refs.button)"
+                                :id="$id('cipher-dropdown')"
+                                style="display: none"
+                                class="absolute left-0 mt-2 w-40 rounded-md bg-white shadow-md z-50"
+                            >
+                                <template x-for="(item, index) in ciphers">
+                                    <a
+                                        href="#"
+                                        @click="cipher=index; close($refs.button)"
+                                        class="flex items-center gap-2 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-2.5 text-left text-sm hover:bg-gray-50 disabled:text-gray-500"
+                                        x-text="ciphers[index].name"
+                                    ></a>
+                                </template>
+                            </div>
                         </div>
-                      </template>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </nav>
-      </header>
-
-      <section id="coded-message" class="bg-white shadow-md rounded-md gap-5 py-4 print:shadow-none print:mt-auto">
-        <div class="flex flex-col gap-7">
-          <template x-for="(line,lineIndex) in lines">
-            <div class="mx-2 text-2xl uppercase justify-center text-center break-after-all">
-              <template x-for="(word,wordIndex) in line">
-                <div class="inline-flex mx-2 mb-2 text-2xl uppercase text-center break-after-auto">
-                  <template x-for="(character,characterIndex) in word">
-                    <div class="inline break-inside-avoid">
-                      <template x-if="isCursor(decodedLines[lineIndex][wordIndex][characterIndex])">
-                        <div class="flex flex-col items-center justify-center gap-x-3 gap-y-5 mx-2 print:hidden">
-                          <span :class="toSymbolSetFont">&nbsp;</span>
-                          <div class="size-10" :class="fromSymbolSetFont">
-                            <span class="text-gray-500 animate-pulse duration-300">█</span>
-                          </div>
-                        </div>
-                      </template>
-                      <template x-if="!isCursor(decodedLines[lineIndex][wordIndex][characterIndex])">
-                        <div class="flex flex-col items-center justify-center gap-x-3 gap-y-5 mx-2">
-                          <span x-text="character" :class="toSymbolSetFont"></span>
-                          <div class="size-10 border-b-2 border-gray-500" :class="fromSymbolSetFont">
-                            <span
-                              class="text-gray-200 print:hidden"
-                              x-text="decodedLines[lineIndex][wordIndex][characterIndex]"
-                            ></span>
-                          </div>
-                        </div>
-                      </template>
                     </div>
-                  </template>
-                </div>
-              </template>
-            </div>
-          </template>
-        </div>
-      </section>
+                </li>
 
-      <section
+                <!-- alphabet selector -->
+                <li>
+                    <div class="flex justify-center">
+                        <div
+                            x-data="{
+            open: false,
+            toggle() {
+                if (this.open) {
+                    return this.close()
+                }
+
+                this.$refs.button.focus()
+
+                this.open = true
+            },
+            close(unfocusAfter) {
+                if (! this.open) return
+
+                this.open = false
+
+                unfocusAfter && unfocusAfter.blur()
+            }
+        }"
+                            x-on:keydown.escape.prevent.stop="close($refs.button)"
+                            x-on:focusin.window="! $refs.panel.contains($event.target) && close()"
+                            x-id="['language-dropdown']"
+                            class="relative"
+                        >
+                            <button
+                                x-ref="button"
+                                x-on:click="toggle()"
+                                :aria-expanded="open"
+                                :aria-controls="$id('language-dropdown')"
+                                type="button"
+                                class="flex items-center gap-2 bg-white w-32 px-5 py-2.5 rounded-md shadow"
+                            >
+                                <span x-text="symbolSets[fromSymbolSet].name"></span>
+                                <!-- Heroicon: chevron-down -->
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    class="h-5 w-5 text-gray-400 ml-auto"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                >
+                                    <path
+                                        fill-rule="evenodd"
+                                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                        clip-rule="evenodd"
+                                    />
+                                </svg>
+                            </button>
+
+                            <div
+                                x-ref="panel"
+                                x-show="open"
+                                x-transition.origin.top.left
+                                x-on:click.outside="close($refs.button)"
+                                :id="$id('language-dropdown')"
+                                style="display: none"
+                                class="absolute left-0 mt-2 w-40 rounded-md bg-white shadow-md z-50"
+                            >
+                                <template x-for="language in languages">
+                                    <a
+                                        href="#"
+                                        @click="fromSymbolSet=language; close($refs.button)"
+                                        class="flex items-center gap-2 w-full first-of-type:rounded-t-md last-of-type:rounded-b-md px-4 py-2.5 text-left text-sm hover:bg-gray-50 disabled:text-gray-500"
+                                        x-text="symbolSets[language].name"
+                                    ></a>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- print -->
+                <li>
+                    <button @click="window.print()" class="inline-flex py-2 px-2 hover:bg-slate-200 rounded">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="w-6 h-6"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z"
+                            />
+                        </svg>
+                    </button>
+                </li>
+
+                <!-- trash -->
+                <li>
+                    <a href="#" @click="reset()" class="inline-flex py-2 px-2 hover:bg-slate-200 rounded">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="w-6 h-6"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                            />
+                        </svg>
+                    </a>
+                </li>
+
+                <!-- settings -->
+                <li>
+                    <button class="inline-flex py-2 px-2 hover:bg-slate-200 rounded"
+                            @click="settingsModal = !settingsModal">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke-width="1.5"
+                            stroke="currentColor"
+                            class="w-6 h-6"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z"
+                            />
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                    </button>
+                    <div
+                        class="fixed inset-0 z-30 flex items-center justify-center overflow-auto bg-black bg-opacity-50"
+                        x-show="settingsModal"
+                    >
+                        <div
+                            class="max-w-3xl px-6 py-6 mx-auto text-left bg-white rounded shadow-lg"
+                            @click.away="settingsModal = false"
+                            x-transition:enter="motion-safe:ease-out duration-300"
+                            x-transition:enter-start="opacity-0 scale-90"
+                            x-transition:enter-end="opacity-100 scale-100"
+                        >
+                            <div class="flex items-center justify-center">
+                                <form x-on:submit.prevent="">
+                                    <div>
+                                        <label for="message"
+                                               class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                        >Message</label
+                                        >
+                                        <textarea
+                                            id="message"
+                                            x-model="message"
+                                            @keypress.prevent=""
+                                            rows="3"
+                                            cols="40"
+                                            class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        ></textarea>
+                                    </div>
+
+                                    <template x-if="ciphers[cipher].seed">
+                                        <div class="pt-2">
+                                            <label for="message"
+                                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                            >Seed</label
+                                            >
+                                            <div class="flex flex-row align-middle gap-1">
+                                                <input
+                                                    x-model.number="seed"
+                                                    type="number"
+                                                    min="0"
+                                                    max="4294967295"
+                                                    step="1"
+                                                    class="float-left p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                />
+                                                <button @click="randomSeed()" class="float-right">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke-width="1.5"
+                                                        stroke="currentColor"
+                                                        class="size-6"
+                                                    >
+                                                        <path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+                                                        />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <template x-if="ciphers[cipher].steps">
+                                        <div class="pt-2">
+                                            <label for="message"
+                                                   class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                                            >Steps</label
+                                            >
+                                            <div class="flex flex-row align-middle gap-1">
+                                                <input
+                                                    x-model.number="steps"
+                                                    type="number"
+                                                    min="1"
+                                                    max="30"
+                                                    step="1"
+                                                    class="float-left p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                                />
+                                                <button @click="randomSteps()" class="float-right">
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        fill="none"
+                                                        viewBox="0 0 24 24"
+                                                        stroke-width="1.5"
+                                                        stroke="currentColor"
+                                                        class="size-6"
+                                                    >
+                                                        <path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+                                                        />
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <section id="coded-message" class="bg-white shadow-md rounded-md gap-5 py-4 mb-5 print:shadow-none print:mt-auto">
+        <div class="flex flex-col gap-7">
+            <template x-for="(line,lineIndex) in lines">
+                <div class="mx-2 text-2xl uppercase justify-center text-center break-after-all">
+                    <template x-for="(word,wordIndex) in line">
+                        <div class="inline-flex mx-2 mb-2 text-2xl uppercase text-center break-after-auto">
+                            <template x-for="(character,characterIndex) in word">
+                                <div class="inline break-inside-avoid">
+                                    <template x-if="isCursor(decodedLines[lineIndex][wordIndex][characterIndex])">
+                                        <div
+                                            class="flex flex-col items-center justify-center gap-x-3 gap-y-5 mx-2 print:hidden">
+                                            <span :class="toSymbolSetFont">&nbsp;</span>
+                                            <div class="size-10" :class="fromSymbolSetFont">
+                                                <span class="text-gray-500 animate-pulse duration-300">█</span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <template x-if="!isCursor(decodedLines[lineIndex][wordIndex][characterIndex])">
+                                        <div class="flex flex-col items-center justify-center gap-x-3 gap-y-5 mx-2">
+                                            <span x-text="character" :class="toSymbolSetFont"></span>
+                                            <div class="size-10 border-b-2 border-gray-500" :class="fromSymbolSetFont">
+                            <span
+                                class="text-gray-200 print:hidden"
+                                x-text="decodedLines[lineIndex][wordIndex][characterIndex]"
+                            ></span>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </section>
+
+    <section
         id="legend"
         class="bg-white shadow-md rounded-md p-4 mt-auto print:shadow-none print:break-inside-avoid-page print:w-full print:border-t border-dashed break-before-auto break-inside-avoid-page"
-      >
-        <div class="flex flex-wrap justify-center print:w-full">
-          <template x-for="(symbol,character) in legend">
-            <div class="flex flex-col items-center border-l last:border-r border-black/10 print:border-gray-400 mt-5">
+    >
+        <div class="flex flex-wrap justify-center print:w-full gap-y-5">
+            <template x-for="(symbol,character) in legend">
+                <div class="flex flex-col items-center border-l last:border-r border-black/10 print:border-gray-400">
               <span
-                class="w-10 print:w-8 text-2xl uppercase text-center"
-                x-text="character"
-                :class="fromSymbolSetFont"
+                  class="w-10 print:w-8 text-2xl uppercase text-center"
+                  x-text="character"
+                  :class="fromSymbolSetFont"
               ></span>
-              <span
-                class="w-10 print:w-8 text-2xl uppercase text-center"
-                x-text="symbol"
-                :class="toSymbolSetFont"
-              ></span>
-            </div>
-          </template>
+                    <span
+                        class="w-10 print:w-8 text-2xl uppercase text-center"
+                        x-text="symbol"
+                        :class="toSymbolSetFont"
+                    ></span>
+                </div>
+            </template>
         </div>
-      </section>
-    </div>
-    <script type="module" src="/main.js"></script>
-  </body>
+    </section>
+
+    <footer class="flex justify-center bg-gray-200/50 shadow-md rounded-md py-4 px-8 mt-5 print:hidden">
+        <a href="https://github.com/mld/codebreaker" class="text-gray-500 hover:text-gray-700">
+            <span class="sr-only">GitHub</span>
+            <svg class="w-6 h-6" aria-hidden="true" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                    fill-rule="evenodd"
+                    d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
+                    clip-rule="evenodd"
+                ></path>
+            </svg>
+        </a>
+    </footer>
+</div>
+<script type="module" src="/main.js"></script>
+</body>
 </html>

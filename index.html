@@ -57,7 +57,7 @@
                     :aria-expanded="open"
                     :aria-controls="$id('cipher-dropdown')"
                     type="button"
-                    class="flex items-center gap-2 bg-white w-48 px-5 py-2.5 rounded-md shadow"
+                    class="flex items-center gap-2 bg-white w-48 px-5 py-2.5 rounded-md shadow-sm"
                   >
                     <span x-text="ciphers[cipher].name"></span>
                     <!-- Heroicon: chevron-down -->
@@ -131,7 +131,7 @@
                     :aria-expanded="open"
                     :aria-controls="$id('language-dropdown')"
                     type="button"
-                    class="flex items-center gap-2 bg-white w-32 px-5 py-2.5 rounded-md shadow"
+                    class="flex items-center gap-2 bg-white w-32 px-5 py-2.5 rounded-md shadow-sm"
                   >
                     <span x-text="symbolSets[fromSymbolSet].name"></span>
                     <!-- Heroicon: chevron-down -->
@@ -174,7 +174,7 @@
             <!-- print -->
             <li>
               <span class="sr-only">Print</span>
-              <button @click="window.print()" class="inline-flex py-2 px-2 hover:bg-slate-200 rounded">
+              <button @click="window.print()" class="inline-flex py-2 px-2 hover:bg-slate-200 rounded-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -195,7 +195,7 @@
             <!-- trash -->
             <li>
               <span class="sr-only">Reset</span>
-              <a href="#" @click="reset()" class="inline-flex py-2 px-2 hover:bg-slate-200 rounded">
+              <a href="#" @click="reset()" class="inline-flex py-2 px-2 hover:bg-slate-200 rounded-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -216,7 +216,7 @@
             <!-- settings -->
             <li>
               <span class="sr-only">Settings</span>
-              <button class="inline-flex py-2 px-2 hover:bg-slate-200 rounded" @click="settingsModal = !settingsModal">
+              <button class="inline-flex py-2 px-2 hover:bg-slate-200 rounded-sm" @click="settingsModal = !settingsModal">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -238,7 +238,7 @@
                 x-show="settingsModal"
               >
                 <div
-                  class="max-w-3xl px-6 py-6 mx-auto text-left bg-white rounded shadow-lg"
+                  class="max-w-3xl px-6 py-6 mx-auto text-left bg-white rounded-sm shadow-lg"
                   @click.away="settingsModal = false"
                   x-transition:enter="motion-safe:ease-out duration-300"
                   x-transition:enter-start="opacity-0 scale-90"
@@ -351,7 +351,7 @@
             <!-- info -->
             <li>
               <span class="sr-only">Info</span>
-              <button class="inline-flex py-2 px-2 hover:bg-slate-200 rounded" @click="infoModal = !infoModal">
+              <button class="inline-flex py-2 px-2 hover:bg-slate-200 rounded-sm" @click="infoModal = !infoModal">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
@@ -372,7 +372,7 @@
                 x-show="infoModal"
               >
                 <div
-                  class="max-w-3xl px-6 py-6 mx-auto text-left bg-white rounded shadow-lg"
+                  class="max-w-3xl px-6 py-6 mx-auto text-left bg-white rounded-sm shadow-lg"
                   @click.away="infoModal = false"
                   x-transition:enter="motion-safe:ease-out duration-300"
                   x-transition:enter-start="opacity-0 scale-90"

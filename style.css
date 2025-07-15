@@ -1,5 +1,7 @@
-@import "@fontsource-variable/noto-emoji";
+@import '@fontsource-variable/noto-emoji';
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme {
+    --font-emoji: 'Noto Emoji Variable', sans-serif;
+}
